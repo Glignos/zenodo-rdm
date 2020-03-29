@@ -1,6 +1,8 @@
 name: Docker
 
 on:
+  repository_dispatch:
+    types: publish-latest
   push:
     # Publish `master` as Docker `latest` image.
     branches:
