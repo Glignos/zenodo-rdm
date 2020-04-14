@@ -10,27 +10,27 @@ Zenodo Invenio RDM instance.
 
 ## Development
 
-To get started you need to have [`invenio-cli`](https://github.com/inveniosoftware/invenio-cli/) installed (we recommend using [`pipx`](https://github.com/pipxproject/pipx) to do so).
+To get started you need to have
+[`invenio-cli`](https://github.com/inveniosoftware/invenio-cli/) installed (we
+recommend using [`pipx`](https://github.com/pipxproject/pipx) to do so).
 
 ```bash
-# Install dependencies and build assets
-pipenv install --dev
+# Install dependencies
+pipenv sync --dev
 pipenv run pip install -r requirements-devel.txt
-# XXX: Remove after https://github.com/inveniosoftware/invenio-cli/issues/121 has been fixed
-cur_dir="$(pwd)"
-venv_dir="$(pipenv --venv)"
-sed -i -E "s|^project_dir = .+|project_dir = $cur_dir|" .invenio
-sed -i -E "s|^logfile = .+|logfile = $cur_dir/logs/invenio-cli.log|" .invenio
-sed -i -E "s|^instance_path = .+|instance_path = $venv_dir/var/instance|" .invenio
-# Symlink templates and config
-ln -sv "$(realpath templates)" "$venv_dir/var/instance/templates"
-ln -sv "$(realpath invenio.cfg)" "$venv_dir/var/instance/invenio.cfg"
+
 # Build assets
 invenio-cli update --install-js
+
 # Start services (DB, ES, etc.). Use the "--force" option to recreate
 invenio-cli services
-# Run it
-invenio-cli run
+
+# Run the development server
+pipenv shell
+export FLASK_ENV=development
+invenio run --cert ./docker/nginx/test.crt --key ./docker/nginx/test.key
+# In a separate terminal run the Webpack build server
+invenio webpack run start
 
 # For using local repositories (e.g. invenio-communities):
 # Activate the virtualenv
